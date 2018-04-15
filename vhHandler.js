@@ -1,6 +1,6 @@
 var websocketSrvBuilder = require('websocket').server;
 var http = require('http');
-var storage = require('./storage.js');
+var storage = require('./common_modules/storage.js');
 
 
 var serverPort = 8080;
@@ -25,3 +25,7 @@ wsServer = new websocketSrvBuilder( {
 wsServer.on('request' , function( request ) {
     var connection = request.accept('echo-protocol' , request.origin);
 });
+
+storage.setValue('nextValue', 'atosPontos');
+
+storage.getValue('nextValue');
