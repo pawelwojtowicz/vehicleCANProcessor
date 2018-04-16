@@ -1,6 +1,7 @@
 var websocketSrvBuilder = require('websocket').server;
 var http = require('http');
 var storage = require('./common_modules/storage.js');
+var canProcessor = require('./vhHandler_modules/canProcessor.js');
 
 
 var serverPort = 8080;
@@ -23,7 +24,22 @@ wsServer = new websocketSrvBuilder( {
 });
 
 wsServer.on('request' , function( request ) {
-    var connection = request.accept('echo-protocol' , request.origin);
+  var connection = request.accept('echo-protocol' , request.origin);
+  
+  connection.on('message', function( message) {
+    if ( 'utf8' == message.type ) {
+      canProcessor.processCANMessage(message.utf8Data);
+      
+    } else if ( 'binary' === message.type) {
+    
+    }
+    
+  });
+  
+  connection.on('close' , function( reasonCode, description) {
+  
+  });
+	
 });
 
 storage.setValue('nextValue', 'atosPontos');

@@ -34,11 +34,15 @@ exports.processCANMessage = function( message ) {
       
       if ( null != deserializer ) {
         deserializer( singleMessage , centralStorage);
+        updateNeeded = true;
       } 
     }
     
     begin = -1;
   }
 
+  if ( updateNeeded) {
+    centralStorage.flushData();
+  }
 
 };
