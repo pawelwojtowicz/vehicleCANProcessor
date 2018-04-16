@@ -1,0 +1,44 @@
+var canDeserializer = required('./canDeserializer.js');
+
+var canDeserializers = new Map();
+
+var centralStorage = null;
+
+
+exports.initialize = function ( storage ) { 
+  canDeserializers[2000] =      canDeserializer.deserializeGPS; 
+  canDeserializers[419361024] = canDeserializer.deserializeCCVS1;
+  canDeserializers[419361025] = canDeserializer.deserializeCCVS1;
+  canDeserializers[419265793] = canDeserializer.deserializeFMS1;
+  
+  centralStorage = storage; 
+};
+
+
+exports.processCANMessage = function( message ) {
+  var messageLength = message.length;
+  var begin = -1;
+  
+  var updateNeeded = false;
+  
+  for ( var i = 0 ; i < messageLength ; ++i ) {
+    var character = message[i];
+    
+    if ( '{' === character) {
+      begin = i;
+    } else if ( -1 !== begin && '}' === character) {
+      var singleMessage = message.substring( begin , ( i+1>messageLength)?i:(i+1));
+      var canObject = JSON.parse(singleMessage);
+      
+      var deserializer = canDeserializers[canObject.c];
+      
+      if ( null != deserializer ) {
+        deserializer( singleMessage , centralStorage);
+      } 
+    }
+    
+    begin = -1;
+  }
+
+
+};
