@@ -1,4 +1,4 @@
-var canDeserializer = required('./canDeserializer.js');
+var canDeserializer = require('./canDeserializer.js');
 
 var canDeserializers = new Map();
 

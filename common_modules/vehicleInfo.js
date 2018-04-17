@@ -5,7 +5,7 @@ exports.initVehicleInfo = function() {
 	vehicleDataMap.set( "timestamp", JSON.stringify(new Date()) );
 };
 
-exports.getVehicleInfoMap() {
+exports.getVehicleInfoMap = function() {
   return vehicleDataMap;
 };
 

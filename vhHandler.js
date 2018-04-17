@@ -1,6 +1,7 @@
 var websocketSrvBuilder = require('websocket').server;
 var http = require('http');
-var vehicleInfo = require('./common_modules/vehicleInfo.js')l
+var vhTools = require('./vhHandler_modules/vehicleHandlerTools.js');
+var vehicleInfo = require('./common_modules/vehicleInfo.js');
 var storage = require('./common_modules/genericStorage.js');
 var canProcessor = require('./vhHandler_modules/canProcessor.js');
 
@@ -10,6 +11,10 @@ var serverPort = 8080;
 
 var server = http.createServer( function(req, resp ) {
     console.log(( new Date() + 'Received request for: '+ req.url));
+    var vehicleId = vhTools.extractVehicleId(req.url);
+  
+    console.log("vehicle "+vehicleId + " connected to the cloud");
+
     resp.writeHead(404);
     resp.end();
 });
@@ -26,6 +31,11 @@ wsServer = new websocketSrvBuilder( {
 
 wsServer.on('request' , function( request ) {
   var connection = request.accept('echo-protocol' , request.origin);
+
+  var vehicleId = vhTools.extractVehicleId(request.origin);
+  
+  console.log("vehicle "+vehicleId + "***** connected to the cloud");
+
   
   connection.on('message', function( message) {
     if ( 'utf8' == message.type ) {
