@@ -18,12 +18,18 @@ exports.storeHashMap = async function( hashMapName, hashMap ) {
     mapRepresentation.push( value );
   });
 
+	console.log("writing to: " + JSON.stringify(mapRepresentation));
+
   const result = await redis.hmest( hashMapName, mapRepresentation );
+console.log("zapisano mape")
   console.log(result);
 }
 
-exports.getHashMap = function ( key ) {
-  
+
+
+
+exports.getHashMap = async function ( key ) {
+	const result = await redis.getAsync( "trapeze_test2" );
 }
 
 exports.setValue = async function( name, value ) {
