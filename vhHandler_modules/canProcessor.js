@@ -10,12 +10,10 @@ exports.initialize = function ( storage ) {
   canDeserializers[419361024] = canDeserializer.deserializeCCVS1;
   canDeserializers[419361025] = canDeserializer.deserializeCCVS1;
   canDeserializers[419265793] = canDeserializer.deserializeFMS1;
-  
-  centralStorage = storage; 
 };
 
 
-exports.processCANMessage = function( message ) {
+exports.processCANMessage = function( message , storage ) {
   var messageLength = message.length;
   var begin = -1;
   
@@ -33,7 +31,7 @@ exports.processCANMessage = function( message ) {
       var deserializer = canDeserializers[canObject.c];
       
       if ( null != deserializer ) {
-        deserializer( singleMessage , centralStorage);
+        deserializer( singleMessage , storage);
         updateNeeded = true;
       } 
     }
@@ -41,8 +39,5 @@ exports.processCANMessage = function( message ) {
     begin = -1;
   }
 
-  if ( updateNeeded) {
-    centralStorage.flushData();
-  }
-
+  return updateNeeded;
 };

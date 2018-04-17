@@ -1,6 +1,7 @@
 var websocketSrvBuilder = require('websocket').server;
 var http = require('http');
-var storage = require('./common_modules/storage.js');
+var vehicleInfo = require('./common_modules/vehicleInfo.js')l
+var storage = require('./common_modules/genericStorage.js');
 var canProcessor = require('./vhHandler_modules/canProcessor.js');
 
 
@@ -28,8 +29,11 @@ wsServer.on('request' , function( request ) {
   
   connection.on('message', function( message) {
     if ( 'utf8' == message.type ) {
-      canProcessor.processCANMessage(message.utf8Data);
-      
+      vehicleInfo.initVehicleInfo();
+	
+      if ( canProcessor.processCANMessage(message.utf8Data , vehicleInfo ) ) {
+        storage.storeHashMap( 8130 , vehicleInfo.getVehicleInfoMap() );
+      };
     } else if ( 'binary' === message.type) {
     
     }
@@ -37,11 +41,7 @@ wsServer.on('request' , function( request ) {
   });
   
   connection.on('close' , function( reasonCode, description) {
-  
+    
   });
 	
 });
-
-storage.setValue('nextValue', 'atosPontos');
-
-storage.getValue('nextValue');
