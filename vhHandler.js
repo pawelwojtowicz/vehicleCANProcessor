@@ -1,4 +1,4 @@
-var websocketSrvBuilder = require('websocket').server;
+const WebsocketServer = require('ws').Server;
 var http = require('http');
 var vhTools = require('./vhHandler_modules/vehicleHandlerTools.js');
 var vehicleInfo = require('./common_modules/vehicleInfo.js');
@@ -9,40 +9,26 @@ var canProcessor = require('./vhHandler_modules/canProcessor.js');
 var serverPort = 8080;
 
 
-var server = http.createServer( function(req, resp ) {
-    console.log(( new Date() + 'Received request for: '+ req.url));
-    var vehicleId = vhTools.extractVehicleId(req.url);
+const wsSrv = new WebsocketServer( { port : serverPort } );
+
+
+console.log("it's comming");
+wsSrv.on('connection', function( connection , request ) {
+  console.log("connected ");
+
+  var vehicleId = vhTools.extractVehicleId(request.url);
   
-    console.log("vehicle "+vehicleId + " connected to the cloud");
-
-    resp.writeHead(404);
-    resp.end();
-});
-
-server.listen( serverPort , function() {
-    console.log((new Date() ) + 'Server started up - listening on the port of :' + serverPort);
-});
-
-
-wsServer = new websocketSrvBuilder( {
-    httpServer : server,
-    autoAcceptConnections : false
-});
-
-wsServer.on('request' , function( request ) {
-  var connection = request.accept('echo-protocol' , request.origin);
-
-  var vehicleId = vhTools.extractVehicleId(request.origin);
+  connection.vehicleIdentifier = vehicleId;
   
-  console.log("vehicle "+vehicleId + "***** connected to the cloud");
+  console.log( "vehicle with ID=["+connection.vehicleIdentifier+"] has connected");
 
-  
-  connection.on('message', function( message) {
+  connection.on('message',function( message) {
     if ( 'utf8' == message.type ) {
+      console.log("received data from vehicle: [" + connection.vehicleIdentifier +"]");
       vehicleInfo.initVehicleInfo();
 	
       if ( canProcessor.processCANMessage(message.utf8Data , vehicleInfo ) ) {
-        storage.storeHashMap( 8130 , vehicleInfo.getVehicleInfoMap() );
+        storage.storeHashMap( connection.vehicleIdentifier , vehicleInfo.getVehicleInfoMap() );
       };
     } else if ( 'binary' === message.type) {
     
@@ -50,8 +36,7 @@ wsServer.on('request' , function( request ) {
     
   });
   
-  connection.on('close' , function( reasonCode, description) {
-    
-  });
-	
+  connection.on('close' , function() {
+    console.log('closing connection with ' + connection.vehicleIdentifier);
+  })
 });
