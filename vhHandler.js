@@ -1,5 +1,4 @@
 const WebsocketServer = require('ws').Server;
-var http = require('http');
 var vhTools = require('./vhHandler_modules/vehicleHandlerTools.js');
 var vehicleInfo = require('./common_modules/vehicleInfo.js');
 var storage = require('./common_modules/genericStorage.js');
