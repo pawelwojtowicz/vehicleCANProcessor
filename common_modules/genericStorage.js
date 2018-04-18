@@ -18,9 +18,8 @@ exports.storeHashMap = async function( hashMapName, hashMap ) {
     mapRepresentation.push( value );
   });
 
-  console.log("writing [" + JSON.stringify(mapRepresentation) + "] to REDIS");
   const result = await redisClient.hset( hashMapName, mapRepresentation );
-  console.log(result);
+  console.log("writing " + JSON.stringify(mapRepresentation) + " to REDIS status=" + result);
 }
 
 

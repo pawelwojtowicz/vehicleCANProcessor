@@ -72,6 +72,7 @@ exports.deserialize = function ( msgId , canPayload , storage ) {
   
   if ( null !== msgDeserializer ) {
     msgDeserializer( canPayload , storage );
+
     return true;
   }
   

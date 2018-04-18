@@ -1,8 +1,8 @@
 var vehicleDataMap = new Map();
 
 exports.initVehicleInfo = function() {
-	vehicleDataMap.clear();
-	vehicleDataMap.set( "timestamp", JSON.stringify(new Date()) );
+  vehicleDataMap.clear();
+  vehicleDataMap.set( "timestamp", new Date());
 };
 
 exports.getVehicleInfoMap = function() {
@@ -10,9 +10,10 @@ exports.getVehicleInfoMap = function() {
 };
 
 exports.setPosition = function ( lat, long) {
-  var position = {};
-  position.latitude = lat;
-  position.longitude = long;
+  var position = {
+    latitude : lat,
+    longitude : long
+  };
 
   vehicleDataMap.set( "position", JSON.stringify( position ) );
 }
