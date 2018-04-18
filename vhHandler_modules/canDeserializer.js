@@ -1,3 +1,4 @@
+var canDeserializers = new Map();
 
 var deserializeGPS = function( canPayload , storage) {
   var latitude = Buffer( canPayload.substring(0,8), 'hex').readFloatBE(0);
@@ -19,7 +20,7 @@ var deserializeCCVS1 = function( canPayload , storage ) {
 
 //419265793
 //PGN 64893
-function getTellId(blockId, partialId) {
+function getTellTaleId(blockId, partialId) {
   var prefix = "tellTale";
   var tellTaleId = blockId*15 + partialId;
   
@@ -60,3 +61,19 @@ var deserializeFMS1 = function( canPayload , storage ) {
 };
 
 
+canDeserializers.set(2000, deserializeGPS);
+canDeserializers.set(419361024, deserializeCCVS1);
+canDeserializers.set(419361025, deserializeCCVS1);
+canDeserializers.set(419265793, deserializeFMS1);
+
+
+exports.deserialize = function ( msgId , canPayload , storage ) {
+  var msgDeserializer = canDeserializers.get( msgId );
+  
+  if ( null !== msgDeserializer ) {
+    msgDeserializer( canPayload , storage );
+    return true;
+  }
+  
+  return false;
+};
