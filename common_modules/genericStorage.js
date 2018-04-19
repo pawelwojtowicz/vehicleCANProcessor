@@ -23,12 +23,18 @@ exports.storeHashMap = async function( hashMapName, hashMap ) {
 }
 
 
-exports.getHashMap = function ( key ) {
+exports.getHashMap = function ( key , callback) {
   console.log("getting hash map");
-	const result = redisClient.hgetall( "trapeze_test2" , function(err, obj) {
-	console.log(JSON.stringify(obj));
+	redisClient.hgetall( key , function(err, obj) {
+	  callback(obj);  
 	} );
 }
+
+exports.getAllKeys = function( allKeysListener ) {
+	redisClient.keys('*' , function(err, keys) {
+		allKeysListener(keys);	
+	});
+};
 
 exports.setValue = async function( name, value ) {
 	await redisClient.setAsync( name, value );
