@@ -22,9 +22,12 @@ exports.storeHashMap = async function( hashMapName, hashMap ) {
   console.log("writing " + JSON.stringify(mapRepresentation) + " to REDIS status=" + result);
 }
 
+exports.storeValueInHashMap = function( hashMapName , key, value ) {
+	redisClient.hmset( hashMapName, key, value);
+}
+
 
 exports.getHashMap = function ( key , callback) {
-  console.log("getting hash map");
 	redisClient.hgetall( key , function(err, obj) {
 	  callback(obj);  
 	} );

@@ -3,6 +3,8 @@ const WebsocketServer = Websocket.Server;
 var vehicleRegistry = require('./webfeed_modules/vehicleRegistry.js');
 var genericStorage = require('./common_modules/genericStorage.js');
 var messageBroker = require('./common_modules/messageBroker.js');
+var srvInfo = require('./common_modules/serverInfo.js');
+
 var serverPort = 8090;
 
 
@@ -39,13 +41,9 @@ var updateAllClients = function() {
         var message = JSON.stringify(vhInfoUpdate);
         console.log(message);
         client.send(message);
-      }); 
-      
-    
-      
+      });  
     }
   });
-  
 }
 
 vehicleRegistry.initialize(genericStorage, updateClientVehicleList);
@@ -68,6 +66,7 @@ wsSrv.on('connection', function( connection , request ) {
   };
 	var vehicleString = JSON.stringify(vhListUpdate);
 	connection.send(vehicleString);
+	srvInfo.setClientCount( wsSrv.clients.size );
 		
   connection.on('message',function( message) {
 	  console.log(message);
@@ -78,12 +77,17 @@ wsSrv.on('connection', function( connection , request ) {
   });
   
   connection.on('close' , function() {
-  })
+	srvInfo.setClientCount( wsSrv.clients.size );
+  });
 });
 
 setInterval( function() {
-updateAllClients();
+  updateAllClients();
 }, 2000);
+
+setInterval( function() {
+  srvInfo.updateSrvStatistics(genericStorage);
+}, 5000);
 
 console.log("Webfeed server is running");
 
