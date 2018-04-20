@@ -4,7 +4,8 @@
   "description": "This is a counter part of the vehicle which deserializes the selected data and stores them into central storage",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "webfeed": "nodejs webfeed.js",
+    "vhHandler": "nodejs vhHandler.js"
   },
   "keywords": [
     "vehicle",
