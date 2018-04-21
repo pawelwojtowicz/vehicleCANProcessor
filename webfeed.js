@@ -4,13 +4,13 @@ var vehicleRegistry = require('./webfeed_modules/vehicleRegistry.js');
 var genericStorage = require('./common_modules/genericStorage.js');
 var messageBroker = require('./common_modules/messageBroker.js');
 var srvInfo = require('./common_modules/serverInfo.js');
-
+var serverRegistry = require('./webfeed_modules/serverRegistry.js');
+var vehicleInfo = require('./webfeed_modules/vehicleInfo.js')
 var serverPort = 8090;
-
 
 const wsSrv = new WebsocketServer( { port : serverPort } );
 
-function sendToAll( message ) {
+var sendToAll = function( message ) {
   wsSrv.clients.forEach( function( client ){
     if (client.readyState === Websocket.OPEN) {
       client.send(message);
@@ -18,71 +18,58 @@ function sendToAll( message ) {
   });
 };
 
-var updateClientVehicleList = function ( vhList) {
-  console.log("Updating Vh List");
-  var vhListUpdate = {
-    type : 'vhListUpdate',
-    data : vhList
-  };
-  var message = JSON.stringify(vhListUpdate);
-  sendToAll(message);
-}
-
-
-var updateAllClients = function() {
-  wsSrv.clients.forEach( function( client ){
-    if (client.readyState === Websocket.OPEN) {
-      console.log("updating clients info for: "+ client.selectedVh);
-      genericStorage.getHashMap(client.selectedVh , function(vhInfo) {
-        var vhInfoUpdate = {
-          type: 'vhInfoUpdate' , 
-          data: vhInfo
-        };
-        var message = JSON.stringify(vhInfoUpdate);
-        console.log(message);
-        client.send(message);
-      });  
-    }
-  });
-}
-
-vehicleRegistry.initialize(genericStorage, updateClientVehicleList);
-
 messageBroker.subscribe( "vhListUpdate", function( channel, message) {
   console.log("received event ["+channel+"]");
   vehicleRegistry.refreshVehicleList();
 });
 
+vehicleRegistry.initialize(genericStorage, sendToAll);
 vehicleRegistry.refreshVehicleList();
 
 wsSrv.on('connection', function( connection , request ) {
-	//set up the vehicle selection to empty
-	connection.selectedVh = "";
-	
-	//get current vh List.
-  var vhListUpdate = {
-    type : 'vhListUpdate',
-    data : vehicleRegistry.getVehicleList()
-  };
-	var vehicleString = JSON.stringify(vhListUpdate);
-	connection.send(vehicleString);
-	srvInfo.setClientCount( wsSrv.clients.size );
+  //set up the vehicle selection to empty
+  connection.selectedVh = "";
+  connection.view = "srvList";
+
+  //get current vh List.
+  vehicleRegistry.updateVehicleList(connection);
 		
   connection.on('message',function( message) {
 	  console.log(message);
 	  var command = JSON.parse(message);
 	  if ( 'vhSelection' === command.cmd ) {
+	    connection.view = "vehicleList";
 	    connection.selectedVh = command.selectedVehicleId;
+	  } else if ( 'srvStats' === command.cmd ) {
+	    connection.view = "srvList";
+	    connection.selectedVh = '';	  
 	  }
   });
   
   connection.on('close' , function() {
-	srvInfo.setClientCount( wsSrv.clients.size );
+  	srvInfo.setClientCount( wsSrv.clients.size );
   });
+  
+  // update the server stats
+  srvInfo.setClientCount( wsSrv.clients.size );
 });
 
-setInterval( function() {
-  updateAllClients();
+setInterval( function() 
+{
+  wsSrv.clients.forEach( function( client )
+  {
+    if (client.readyState === Websocket.OPEN) 
+    {
+      if ( "vehicleList" === client.view ) 
+      {
+        vehicleInfo.updateVehicleInfo( client.selectedVh, genericStorage,client);
+      } 
+      else if ( "srvList" === client.view ) 
+      {
+        serverRegistry.updateServerList( genericStorage, client );
+      }
+    }
+  });
 }, 2000);
 
 setInterval( function() {

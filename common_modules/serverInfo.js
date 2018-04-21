@@ -22,7 +22,7 @@ exports.updateSrvStatistics = function ( storage ) {
 		dataVolume : processedData  
 	};
 
-	console.log( "serverStats -" + JSON.stringify( serverEntry ));
+	//console.log( "serverStats -" + JSON.stringify( serverEntry ));
 
 	storage.storeValueInHashMap( serverRegistry ,  envServerName , JSON.stringify( serverEntry ) ); 	
 };

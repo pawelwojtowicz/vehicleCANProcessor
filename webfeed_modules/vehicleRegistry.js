@@ -1,21 +1,30 @@
 var vehicleList = [];
 var storage = null;
-var vehicleListListener = null;
+var vhListBroadcaster = null;
 
 exports.initialize = function( genericStorage , vhListener) {
   storage = genericStorage;
-  vehicleListListener = vhListener;
+  vhListBroadcaster = vhListener;
 };
+
+function prepareVhUpdateMessage() {
+  var vhListUpdate = {
+    type : 'vhListUpdate',
+    data : vehicleList
+  };
+  return JSON.stringify(vhListUpdate);
+}
 
 exports.refreshVehicleList  = function() {
   storage.getAllKeys( function(vehicles) {
     vehicleList = vehicles;
+	console.log("dostalem" + JSON.stringify(vehicleList));
     
-    vehicleListListener(vehicleList);
+    vhListBroadcaster(prepareVhUpdateMessage());
   });
 };
 
-
-exports.getVehicleList = function() {
-  return vehicleList;
-};
+exports.updateVehicleList = function( websocketClient ) {
+console.log(prepareVhUpdateMessage())
+  websocketClient.send(prepareVhUpdateMessage());
+}
