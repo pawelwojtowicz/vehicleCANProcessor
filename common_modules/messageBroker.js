@@ -1,5 +1,5 @@
 var redis = require('redis');
-var broker = redis.createClient();
+var broker = redis.createClient(6379, "redis");
 
 var subscribers = new Map();
 

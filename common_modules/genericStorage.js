@@ -4,7 +4,7 @@ var Promise = require('bluebird');
 Promise.promisifyAll(redis.RedisClient.prototype);
 Promise.promisifyAll(redis.Multi.prototype);
 
-var redisClient = redis.createClient();
+var redisClient = redis.createClient(6379, "redis");
 
 redisClient.on('error', function( err) {
     console.log((new Date()), 'Redis Error' + JSON.stringify(err));
