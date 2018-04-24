@@ -40,9 +40,11 @@ wsSrv.on('connection', function( connection , request ) {
 	  if ( 'vhSelection' === command.cmd ) {
 	    connection.view = "vehicleList";
 	    connection.selectedVh = command.selectedVehicleId;
+ 	    vehicleInfo.updateVehicleInfo( connection.selectedVh, genericStorage,connection);
 	  } else if ( 'srvStats' === command.cmd ) {
 	    connection.view = "srvList";
-	    connection.selectedVh = '';	  
+	    connection.selectedVh = '';
+	    serverRegistry.updateServerList( genericStorage, connection );
 	  }
   });
   
@@ -70,11 +72,11 @@ setInterval( function()
       }
     }
   });
-}, 2000);
+}, 1000);
 
 setInterval( function() {
   srvInfo.updateSrvStatistics(genericStorage);
-}, 5000);
+}, 500);
 
 console.log("Webfeed server is running");
 
