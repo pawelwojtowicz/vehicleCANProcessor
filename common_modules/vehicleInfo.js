@@ -24,7 +24,12 @@ exports.setSpeed = function( speed) {
 
 
 exports.setTellTaleBlock = function ( tellTales ) {
-
+  for ( var key in tellTales ) {
+    if ( tellTales.hasOwnProperty(key) && key.startsWith('tt') ) {
+      console.log(key);
+      vehicleDataMap.set( key, tellTales[key]);
+    }	
+  }
 };
 
 

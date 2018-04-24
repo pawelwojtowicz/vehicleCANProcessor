@@ -21,7 +21,7 @@ var deserializeCCVS1 = function( canPayload , storage ) {
 //419265793
 //PGN 64893
 function getTellTaleId(blockId, partialId) {
-  var prefix = "tellTale";
+  var prefix = "tt";
   var tellTaleId = blockId*15 + partialId;
   
   return prefix + tellTaleId.toString();
