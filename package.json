@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "webfeed": "nodejs webfeed.js",
-    "vhHandler": "nodejs vhHandler.js"
+    "vhHandler": "nodejs vehicleHandler.js"
   },
   "keywords": [
     "vehicle",
@@ -16,6 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.1",
+    "kafka-node": "^2.6.0",
     "redis": "^2.8.0",
     "snmpjs": "^0.1.8",
     "ws": "^5.1.1"
