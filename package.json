@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "webfeed": "nodejs webfeed.js",
-    "vhHandler": "nodejs vehicleHandler.js"
+    "vhHandler": "nodejs vehicleHandler.js",
+    "redisWriter" : "nodejs CANRedisWriter.js"
   },
   "keywords": [
     "vehicle",

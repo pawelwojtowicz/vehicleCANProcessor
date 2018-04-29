@@ -10,6 +10,10 @@ consumer.on('ready' , function() {
   console.log('Kafka connection ready');
 });
 
+consumer.on('error', function(error) {
+  console.log("There was an error" + JSON.stringify(error));
+});
+
 exports.subscribeTopic = function( rTopic ) {
   consumer.addTopics([{ topic: rTopic}], function (err, added) {
     console.log("Topic " + rTopic + " added" + JSON.stringify(added));
