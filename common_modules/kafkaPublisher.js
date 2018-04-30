@@ -1,9 +1,10 @@
 var kafka = require('kafka-node');
 var Producer = kafka.Producer;
 var KeyedMessage = kafka.KeyedMessage;
-var client = new kafka.Client();
+var client = new kafka.Client('kafka:2181');
 var producer = new Producer(client);
 
+console.log("Connecting to KAFKA");
 
 producer.on('ready', function () {
   console.log("connected to Kafka");

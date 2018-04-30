@@ -1,10 +1,10 @@
 var kafka = require('kafka-node');
 var Consumer = kafka.Consumer;
-var client = new kafka.Client();
+var client = new kafka.Client('kafka:2181');
 
 consumer = new Consumer( client, [], { autoCommit: false } );
 
-
+console.log("Connecting to KAFKA");
 
 consumer.on('ready' , function() {
   console.log('Kafka connection ready');
