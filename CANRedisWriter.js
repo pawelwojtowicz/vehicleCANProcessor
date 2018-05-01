@@ -19,8 +19,9 @@ kafkaConsumer.registerMessageListener( function( message ) {
     if ( "true" === message.value ) {
       console.log( message.key+' is online');
       vehicleInfo.initVehicleInfo();
-      storage.storeHashMap( message.key , vehicleInfo.getVehicleInfoMap() , function() {
-        messageBroker.publish("vhListUpdate", "test");      
+      storage.storeHashMap( message.key , vehicleInfo.getVehicleInfoMap() , function(err) {
+	console.log("A map for vehicle has been stored Err:["+err+"]");
+        messageBroker.publish("vhListUpdate", message.key);      
       });
     } else {
       console.log( message.key+' is offline');    

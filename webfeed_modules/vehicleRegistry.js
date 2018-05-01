@@ -18,7 +18,7 @@ function prepareVhUpdateMessage() {
 exports.refreshVehicleList  = function() {
   storage.getAllKeys( function(vehicles) {
     vehicleList = vehicles;
-	console.log("dostalem" + JSON.stringify(vehicleList));
+	console.log("There's a new vehicle list" + JSON.stringify(vehicleList));
     
     vhListBroadcaster(prepareVhUpdateMessage());
   });

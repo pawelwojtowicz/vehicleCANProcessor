@@ -19,7 +19,7 @@ var sendToAll = function( message ) {
 };
 
 messageBroker.subscribe( "vhListUpdate", function( channel, message) {
-  console.log("received event ["+channel+"]");
+  console.log("received event ["+channel+"] + the vehicle of: "+ message + " added");
   vehicleRegistry.refreshVehicleList();
 });
 
