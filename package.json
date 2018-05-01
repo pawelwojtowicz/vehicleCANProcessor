@@ -6,7 +6,7 @@
   "scripts": {
     "webfeed": "nodejs webfeed.js",
     "vhHandler": "nodejs vehicleHandler.js",
-    "redisWriter" : "nodejs CANRedisWriter.js"
+    "redisWriter": "nodejs CANRedisWriter.js"
   },
   "keywords": [
     "vehicle",

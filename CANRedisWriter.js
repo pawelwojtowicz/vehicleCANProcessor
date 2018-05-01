@@ -32,5 +32,6 @@ kafkaConsumer.registerMessageListener( function( message ) {
 
 setInterval( function(){
   srvInfo.updateSrvStatistics(storage);
+  kafkaConsumer.subscribePending();
 }, 2000);
 
