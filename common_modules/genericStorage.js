@@ -15,7 +15,7 @@ redisClient.on('error', function( err) {
     console.log((new Date()), 'Redis Error' + JSON.stringify(err));
 });
 
-exports.storeHashMap = async function( hashMapName, hashMap ) {
+exports.storeHashMap = async function( hashMapName, hashMap , callbackFunc) {
   var mapRepresentation = [];
   
   hashMap.forEach( function( value, key ) {
@@ -23,8 +23,7 @@ exports.storeHashMap = async function( hashMapName, hashMap ) {
     mapRepresentation.push( value );
   });
 
-  const result = await redisClient.hset( hashMapName, mapRepresentation );
-  //console.log("writing " + JSON.stringify(mapRepresentation) + " to REDIS status=" + result);
+  redisClient.hset( hashMapName, mapRepresentation , callbackFunc );
 }
 
 exports.storeValueInHashMap = function( hashMapName , key, value ) {
