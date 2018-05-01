@@ -1,5 +1,10 @@
 var redis = require('redis');
-var broker = redis.createClient(6379, "redis");
+var broker = redis.createClient(6379, "redis", {
+    retry_strategy: function (options) {
+	console.log("RedisError: " + JSON.stringify(options.error));
+        return Math.min(options.attempt * 100, 3000);
+    }
+});
 
 var subscribers = new Map();
 

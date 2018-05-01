@@ -76,7 +76,7 @@ setInterval( function()
 
 setInterval( function() {
   srvInfo.updateSrvStatistics(genericStorage);
-}, 500);
+}, 2000);
 
 console.log("Webfeed server is running");
 
