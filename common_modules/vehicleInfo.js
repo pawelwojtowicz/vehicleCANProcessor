@@ -33,6 +33,11 @@ exports.setTellTaleBlock = function ( tellTales ) {
 };
 
 
+exports.setViricitiValue = function ( key, value ) {
+  vehicleDataMap.set( key, value);
+}
+
+
 
 
 
